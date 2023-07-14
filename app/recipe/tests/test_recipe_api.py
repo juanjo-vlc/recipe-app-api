@@ -17,6 +17,7 @@ from recipe.serializers import (
     RecipeDetailSerializer,
 )
 
+
 RECIPES_URL = reverse('recipe:recipe-list')
 
 
@@ -52,13 +53,13 @@ class PublicRecipeAPITest(TestCase):
         self.client = APIClient()
 
     def test_auth_required(self):
-        """Tes auth is required to call API."""
+        """Test auth is required to call API."""
         res = self.client.get(RECIPES_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class PrivateRecipeApiTest(TestCase):
+class PrivateRecipeApiTests(TestCase):
     """Test authenticated API requests."""
 
     def setUp(self):
@@ -112,7 +113,7 @@ class PrivateRecipeApiTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=res.data['id'])
-        for k,v in payload.items():
+        for k, v in payload.items():
             self.assertEqual(getattr(recipe, k), v)
         self.assertEqual(recipe.user, self.user)
 
@@ -122,7 +123,7 @@ class PrivateRecipeApiTest(TestCase):
         recipe = create_recipe(
             user=self.user,
             title='Sample recipe title',
-            link=original_link
+            link=original_link,
         )
 
         payload = {'title': 'New recipe title'}
