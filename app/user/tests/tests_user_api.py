@@ -11,7 +11,7 @@ from rest_framework import status
 
 CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
-ME_URL = reverse("user:me")
+ME_URL = reverse('user:me')
 
 def create_user(**params):
     """Create and return a new user."""
@@ -25,13 +25,12 @@ class PublicUserApiTests(TestCase):
         self.client = APIClient()
 
     def test_create_user_success(self):
-        """Test createing a user is successful."""
+        """Test creating a user is successful."""
         payload = {
             'email': 'test@example.com',
             'password': 'testpass123',
             'name': 'Test Name'
         }
-
         res = self.client.post(CREATE_USER_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -51,7 +50,6 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-
     def test_password_too_short_error(self):
         """Test an error is returned if password less than 5 chars."""
         payload = {
@@ -59,7 +57,6 @@ class PublicUserApiTests(TestCase):
             'password': 'pw',
             'name': 'Test name',
         }
-
         res = self.client.post(CREATE_USER_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -71,15 +68,15 @@ class PublicUserApiTests(TestCase):
     def test_create_token_for_user(self):
         """Test generates token for valid credentials."""
         user_details = {
-            'email': 'test@example.com',
-            'password': 'testpass123',
             'name': 'Test Name',
+            'email': 'test@example.com',
+            'password': 'test-user-password123',
         }
         create_user(**user_details)
 
         payload = {
-            'email': 'test@example.com',
-            'password': 'testpass123',
+            'email': user_details['email'],
+            'password': user_details['password']
         }
         res = self.client.post(TOKEN_URL, payload)
 

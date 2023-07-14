@@ -17,11 +17,11 @@ TAGS_URL = reverse('recipe:tag-list')
 
 
 def create_user(email='user@example.com', password='testpass123'):
-    """Create amd return a user."""
+    """Create and return a user."""
     return get_user_model().objects.create_user(email=email, password=password)
 
 class PublicTagsApiTests(TestCase):
-    """Test  unauthenticated API requests."""
+    """Test unauthenticated API requests."""
 
     def setUp(self):
         self.client = APIClient()
@@ -40,10 +40,10 @@ class PrivateTagsApiTests(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 
-    def test_retrieve_tag(self):
-        """Test retrievea  list of tags."""
-        Tags.objects.create(user=self.user, name='Vegan')
-        Tags.objects.create(user=self.user, name='Dessert')
+    def test_retrieve_tags(self):
+        """Test retrieving  list of tags."""
+        Tag.objects.create(user=self.user, name='Vegan')
+        Tag.objects.create(user=self.user, name='Dessert')
 
         res = self.client.get(TAGS_URL)
 
@@ -58,11 +58,10 @@ class PrivateTagsApiTests(TestCase):
         Tag.objects.create(user=user2, name='Fruity')
         tag = Tag.objects.create(user=self.user, name='Comfort Food')
 
-        res =  self.client.get(TAGS_URL)
+        res = self.client.get(TAGS_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0], 1)
         self.assertEqual(res.data[0]['name'], tag.name)
         self.assertEqual(res.data[0]['id'], tag.id)
 
