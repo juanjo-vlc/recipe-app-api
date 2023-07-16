@@ -11,7 +11,7 @@ from core import models
 
 
 def create_user(email='user@example.com', password='testpass123'):
-    """Create and return a new user."""
+    """Create a return a new user."""
     return get_user_model().objects.create_user(email, password)
 
 
@@ -21,7 +21,7 @@ class ModelTests(TestCase):
     def test_create_user_with_email_successful(self):
         """Test creating a user with an email is successful."""
         email = 'test@example.com'
-        password = 'testpas123'
+        password = 'testpass123'
         user = get_user_model().objects.create_user(
             email=email,
             password=password,
@@ -43,7 +43,7 @@ class ModelTests(TestCase):
             self.assertEqual(user.email, expected)
 
     def test_new_user_without_email_raises_error(self):
-        """Test that creating an user without an email raises a ValueError."""
+        """Test that creating a user without an email raises a ValueError."""
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user('', 'test123')
 
@@ -68,7 +68,7 @@ class ModelTests(TestCase):
             title='Sample recipe name',
             time_minutes=5,
             price=Decimal('5.50'),
-            description='Sample recipe description.',
+            description='Sample receipe description.',
         )
 
         self.assertEqual(str(recipe), recipe.title)
@@ -93,7 +93,7 @@ class ModelTests(TestCase):
     @patch('core.models.uuid.uuid4')
     def test_recipe_file_name_uuid(self, mock_uuid):
         """Test generating image path."""
-        uuid = 'tes-uuid'
+        uuid = 'test-uuid'
         mock_uuid.return_value = uuid
         file_path = models.recipe_image_file_path(None, 'example.jpg')
 

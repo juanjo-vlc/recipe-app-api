@@ -52,7 +52,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             recipe.tags.add(tag_obj)
 
     def _get_or_create_ingredients(self, ingredients, recipe):
-        """Handle getting or creating tags as needed."""
+        """Handle getting or creating ingredients as needed."""
         auth_user = self.context['request'].user
         for ingredient in ingredients:
             ingredient_obj, created = Ingredient.objects.get_or_create(
@@ -94,6 +94,7 @@ class RecipeDetailSerializer(RecipeSerializer):
 
     class Meta(RecipeSerializer.Meta):
         fields = RecipeSerializer.Meta.fields + ['description']
+
 
 class RecipeImageSerializer(serializers.ModelSerializer):
     """Serializer for uploading images to recipes."""

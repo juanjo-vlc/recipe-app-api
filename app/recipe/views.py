@@ -7,6 +7,7 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes,
 )
+
 from rest_framework import (
     viewsets,
     mixins,
@@ -37,7 +38,7 @@ from recipe import serializers
                 'ingredients',
                 OpenApiTypes.STR,
                 description='Comma separated list of ingredient IDs to filter',
-            )
+            ),
         ]
     )
 )
@@ -49,7 +50,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def _params_to_ints(self, qs):
-        """Convert a list of string to integers."""
+        """Convert a list of strings to integers."""
         return [int(str_id) for str_id in qs.split(',')]
 
     def get_queryset(self):
@@ -58,14 +59,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ingredients = self.request.query_params.get('ingredients')
         queryset = self.queryset
         if tags:
-            tags_ids = self._params_to_ints(tags)
-            queryset = queryset.filter(tags__id__in=tags_ids)
+            tag_ids = self._params_to_ints(tags)
+            queryset = queryset.filter(tags__id__in=tag_ids)
         if ingredients:
-            ingredients_ids = self._params_to_ints(ingredients)
-            queryset = queryset.filter(ingredients__id__in=ingredients_ids)
+            ingredient_ids = self._params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredient_ids)
 
         return queryset.filter(
-            user=self.request.user,
+            user=self.request.user
         ).order_by('-id').distinct()
 
     def get_serializer_class(self):
@@ -100,8 +101,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 'assigned_only',
                 OpenApiTypes.INT, enum=[0, 1],
-                description='Filter by items assigned to recipes.'
-            )
+                description='Filter by items assigned to recipes.',
+            ),
         ]
     )
 )
@@ -126,13 +127,14 @@ class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
             user=self.request.user
         ).order_by('-name').distinct()
 
+
 class TagViewSet(BaseRecipeAttrViewSet):
     """Manage tags in the database."""
     serializer_class = serializers.TagSerializer
     queryset = Tag.objects.all()
 
+
 class IngredientViewSet(BaseRecipeAttrViewSet):
     """Manage ingredients in the database."""
     serializer_class = serializers.IngredientSerializer
     queryset = Ingredient.objects.all()
-
